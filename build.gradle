@@ -1,0 +1,30 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+sourceCompatibility = 1.6
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+jacoco {
+    toolVersion = '0.7.5.201505241946'
+}
+
+jacocoTestReport {
+    reports {
+        html.destination "${buildDir}/reports/coverage"
+    }
+}
+
+task generateDocumentation(type: Javadoc) {
+    source = sourceSets.main.allJava
+    excludes = [
+            "*Impl"
+    ]
+}
