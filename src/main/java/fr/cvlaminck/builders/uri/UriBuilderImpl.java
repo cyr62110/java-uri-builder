@@ -15,193 +15,113 @@
  */
 package fr.cvlaminck.builders.uri;
 
-import fr.cvlaminck.builders.authority.Authority;
-import fr.cvlaminck.builders.authority.AuthorityBuilder;
-import fr.cvlaminck.builders.exception.MalformedPathException;
-import fr.cvlaminck.builders.exception.MalformedQueryParametersException;
-import fr.cvlaminck.builders.path.Path;
-import fr.cvlaminck.builders.path.PathBuilder;
-import fr.cvlaminck.builders.query.QueryParameters;
-import fr.cvlaminck.builders.query.QueryParametersBuilder;
 import fr.cvlaminck.builders.uri.encoding.UriEncoding;
 
 class UriBuilderImpl
-        implements UriBuilder {
+    extends BaseUriBuilderImpl
+    implements UriBuilder {
 
-    private UriEncoding uriEncoding;
-
-    private UriValidator uriValidator;
-
-    private String scheme;
-
-    private AuthorityBuilder authorityBuilder;
-
-    private PathBuilder pathBuilder;
-
-    private String query;
-    private QueryParametersBuilder queryParametersBuilder;
-
-    private String fragment;
-
-    protected UriBuilderImpl(UriEncoding uriEncoding) {
-        this.uriEncoding = uriEncoding;
-
-        this.uriValidator = new UriValidator();
-        this.pathBuilder = Path.emptyPath().buildUpon();
+    UriBuilderImpl(UriEncoding uriEncoding) {
+        super(uriEncoding);
     }
 
-    protected UriBuilderImpl(UriEncoding uriEncoding, Uri uri) {
-        this(uriEncoding);
-
-        this.scheme = uri.getScheme();
-        if (uri.hasAuthority()) {
-            this.authorityBuilder = uri.getAuthority().buildUpon();
-        }
-        this.pathBuilder = uri.getPath().buildUpon();
-        if (uri.hasQuery()) {
-            try {
-                this.queryParametersBuilder = QueryParameters.parse(uri.getEncodedQuery()).buildUpon();
-            } catch (MalformedQueryParametersException ex) {
-                this.query = uri.getEncodedQuery();
-            }
-        }
-        this.fragment = uri.getEncodedFragment();
+    UriBuilderImpl(UriEncoding uriEncoding, Uri uri) {
+        super(uriEncoding, uri);
     }
 
     @Override
-    public UriBuilder withScheme(String scheme) {
-        uriValidator.validateScheme(scheme);
-        this.scheme = scheme;
+    public UriBuilder withEncodedUserInformation(String encodedUserInformation) {
+        getAuthorityBuilder().withEncodedUserInformation(encodedUserInformation);
         return this;
     }
 
     @Override
-    public UriBuilder withAuthority(String sAuthority) {
-        Authority authority = (sAuthority != null) ? Authority.parse(sAuthority) : null;
-        return withAuthority(authority);
-    }
-
-    @Override
-    public UriBuilder withAuthority(Authority authority) {
-        AuthorityBuilder builder = (authority != null) ? authority.buildUpon() : null;
-        return withAuthority(builder);
-    }
-
-    @Override
-    public UriBuilder withAuthority(AuthorityBuilder authorityBuilder) {
-        this.authorityBuilder = authorityBuilder;
+    public UriBuilder withUserInformation(String userInformation) {
+        getAuthorityBuilder().withUserInformation(userInformation);
         return this;
     }
 
     @Override
-    public UriBuilder withoutAuthority() {
-        return withAuthority((Authority) null);
-    }
-
-    @Override
-    public UriBuilder withPath(String path) {
-        return withPath(Path.parse(path));
-    }
-
-    @Override
-    public UriBuilder withPath(Path path) {
-        if (path == null) {
-            throw new MalformedPathException();
-        }
-        return withPath(path.buildUpon());
-    }
-
-    @Override
-    public UriBuilder withPath(PathBuilder pathBuilder) {
-        if (pathBuilder == null) {
-            throw new MalformedPathException();
-        }
-        this.pathBuilder = pathBuilder;
+    public UriBuilder withEncodedHost(String encodedHost) {
+        getAuthorityBuilder().withEncodedHost(encodedHost);
         return this;
     }
 
     @Override
-    public UriBuilder withEmptyPath() {
-        this.pathBuilder = Path.emptyPath().buildUpon();
+    public UriBuilder withHost(String host) {
+        getAuthorityBuilder().withHost(host);
         return this;
     }
 
     @Override
-    public UriBuilder withEncodedQuery(String query) {
-        if (query != null) {
-            uriValidator.validateQuery(query);
-        }
-        this.query = query;
-        this.queryParametersBuilder = null;
+    public UriBuilder withEmptyHost() {
+        getAuthorityBuilder().withEmptyHost();
         return this;
     }
 
     @Override
-    public UriBuilder withQuery(String query) {
-        return withEncodedQuery(uriEncoding.encode(query));
-    }
-
-    @Override
-    public UriBuilder withoutQuery() {
-        return withEncodedQuery(null);
-    }
-
-    @Override
-    public UriBuilder withQueryParameters(QueryParameters queryParameters) {
-        QueryParametersBuilder builder = (queryParameters != null) ? queryParameters.buildUpon() : null;
-        return withQueryParameters(builder);
-    }
-
-    @Override
-    public UriBuilder withQueryParameters(QueryParametersBuilder queryParametersBuilder) {
-        this.query = null;
-        this.queryParametersBuilder = queryParametersBuilder;
+    public UriBuilder withPort(int port) {
+        getAuthorityBuilder().withPort(port);
         return this;
     }
 
     @Override
-    public UriBuilder withEncodedFragment(String fragment) {
-        if (fragment == null || fragment.isEmpty()) {
-            this.fragment = null;
-        } else {
-            uriValidator.validateFragment(fragment);
-            this.fragment = fragment;
-        }
+    public UriBuilder withoutPort() {
+        getAuthorityBuilder().withoutPort();
         return this;
     }
 
     @Override
-    public UriBuilder withFragment(String fragment) {
-        return withEncodedFragment(uriEncoding.encode(fragment));
-    }
-
-    @Override
-    public UriBuilder withoutFragment() {
-        this.fragment = null;
+    public UriBuilder appendPathSegment(String pathSegment) {
+        getPathBuilder().appendPathSegment(pathSegment);
         return this;
     }
 
     @Override
-    public Uri build() {
-        Authority authority = (authorityBuilder != null) ? authorityBuilder.build() : null;
-        Path path;
-        if (authority != null) { //When authority is present, the path must either be empty or begin with a slash ("/") character.
-            pathBuilder.absolute();
-        }
-        path = pathBuilder.build();
+    public UriBuilder appendEncodedPathSegment(String pathSegment) {
+        getPathBuilder().appendEncodedPathSegment(pathSegment);
+        return this;
+    }
 
-        if (authority == null && path.getPathSegmentCount() != 0) {
-            if (path.getPathSegment(0).startsWith("//")) {
-                throw new MalformedPathException("When authority is not present, the path cannot begin with two slash characters (\"//\").");
-            }
-        }
+    @Override
+    public UriBuilder removePathSegment(int index) {
+        getPathBuilder().removePathSegment(index);
+        return this;
+    }
 
-        Uri uri;
-        if (queryParametersBuilder != null) {
-            uri = new Uri(uriEncoding, scheme, authority, path, queryParametersBuilder.build(), fragment);
-        } else {
-            uri = new Uri(uriEncoding, scheme, authority, path, query, fragment);
-        }
-        return uri;
+    @Override
+    public UriBuilder removeLastPathSegment() {
+        getPathBuilder().removeLastPathSegment();
+        return this;
+    }
+
+    @Override
+    public UriBuilder removeFirstPathSegment() {
+        getPathBuilder().removeFirstPathSegment();
+        return this;
+    }
+
+    @Override
+    public UriBuilder appendEncodedQueryParameter(String encodedKey, String... encodedValues) {
+        getQueryParametersBuilder().appendEncodedQueryParameter(encodedKey, encodedValues);
+        return this;
+    }
+
+    @Override
+    public UriBuilder appendQueryParameter(String key, String... values) {
+        getQueryParametersBuilder().appendQueryParameter(key, values);
+        return this;
+    }
+
+    @Override
+    public UriBuilder removeQueryParameter(String name) {
+        getQueryParametersBuilder().removeQueryParameter(name);
+        return this;
+    }
+
+    @Override
+    public UriBuilder removeQueryParameterWithEncodedName(String encodedName) {
+        getQueryParametersBuilder().removeQueryParameterWithEncodedName(encodedName);
+        return this;
     }
 }

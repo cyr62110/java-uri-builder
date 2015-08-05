@@ -16,10 +16,12 @@
 package fr.cvlaminck.builders.uri;
 
 import fr.cvlaminck.builders.Builder;
+import fr.cvlaminck.builders.authority.AuthorityBuilderOperations;
+import fr.cvlaminck.builders.path.PathBuilderOperations;
+import fr.cvlaminck.builders.query.QueryParametersBuilderOperations;
 
 public interface UriBuilder
-        extends UriBuilderOperations<UriBuilder>,/* FIXME: AuthorityBuilderOperations<UriBuilder>,
-        PathBuilderOperations<UriBuilder>, QueryParametersBuilderOperations<UriBuilder>,*/
+        extends UriBuilderOperations<UriBuilder>, AuthorityBuilderOperations<UriBuilder>,
+        PathBuilderOperations<UriBuilder>, QueryParametersBuilderOperations<UriBuilder>,
         Builder<Uri> {
-
 }
