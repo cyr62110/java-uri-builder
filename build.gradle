@@ -1,5 +1,16 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'jacoco'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 sourceCompatibility = 1.6
 version = '1.0'
@@ -27,4 +38,27 @@ task generateDocumentation(type: Javadoc) {
     excludes = [
             "*Impl"
     ]
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            groupId 'fr.cvlaminck'
+            artifactId 'java-uri-builder'
+        }
+    }
+}
+
+bintray {
+    user = System.getProperty('bintray.user')
+    key = System.getProperty('bintray.key')
+    publications = ['maven']
+    pkg {
+        repo = 'maven'
+        name = 'java-uri-builder'
+        version {
+            name = project.version
+        }
+    }
 }
