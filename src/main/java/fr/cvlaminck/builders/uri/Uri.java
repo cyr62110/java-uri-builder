@@ -22,6 +22,10 @@ import fr.cvlaminck.builders.query.QueryParameters;
 import fr.cvlaminck.builders.uri.encoding.UriEncoding;
 import fr.cvlaminck.builders.uri.parser.UriParser;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class Uri {
     public final static char schemeSeparator = ':';
     public final static char authorityPrefixCharacter = '/';
@@ -107,6 +111,14 @@ public class Uri {
 
     public String getFragment() {
         return uriEncoding.decode(fragment);
+    }
+
+    public URI toURI() {
+        try {
+            return new URI(toString());
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("java.net.URI cannot parse uri build using java-uri-builder.", e);
+        }
     }
 
     @Override
