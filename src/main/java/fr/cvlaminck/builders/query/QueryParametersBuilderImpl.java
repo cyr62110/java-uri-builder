@@ -66,14 +66,24 @@ class QueryParametersBuilderImpl
 
     @Override
     public QueryParametersBuilder appendQueryParameter(String key, String... values) {
-        //TODO
+        String encodedKey = uriEncoding.encode(key);
+        String[] encodedValues = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            encodedValues[i] = uriEncoding.encode(values[i]);
+        }
+        return appendEncodedQueryParameter(encodedKey, encodedValues);
+    }
+
+    @Override
+    public QueryParametersBuilder removeQueryParameterWithEncodedName(String encodedName) {
+        queryParameters.remove(encodedName);
         return this;
     }
 
     @Override
     public QueryParametersBuilder removeQueryParameter(String name) {
-        //TODO
-        return this;
+        String encodedKey = uriEncoding.encode(name);
+        return removeQueryParameterWithEncodedName(encodedKey);
     }
 
     @Override
