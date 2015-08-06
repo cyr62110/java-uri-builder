@@ -23,12 +23,16 @@ package fr.cvlaminck.builders.query;
  */
 public interface QueryParametersBuilderOperations<Builder> {
 
-    public Builder appendEncodedQueryParameter(String encodedKey, String... encodedValues);
+    public Builder appendEncodedQueryParameter(String encodedName, String... encodedValues);
 
-    public Builder appendQueryParameter(String key, String... values);
+    public Builder appendQueryParameter(String name, String... values);
+
+    public Builder removeQueryParameterWithEncodedName(String encodedName);
 
     public Builder removeQueryParameter(String name);
 
-    public Builder removeQueryParameterWithEncodedName(String encodedName);
+    public Builder replaceEncodedQueryParameter(String encodedName, String... encodedValues);
+
+    public Builder replaceQueryParameter(String name, String... values);
 
 }

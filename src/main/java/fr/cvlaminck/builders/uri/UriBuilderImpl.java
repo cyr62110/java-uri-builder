@@ -120,6 +120,18 @@ class UriBuilderImpl
     }
 
     @Override
+    public UriBuilder replaceEncodedQueryParameter(String encodedName, String... encodedValues) {
+        getQueryParametersBuilder().replaceEncodedQueryParameter(encodedName, encodedValues);
+        return this;
+    }
+
+    @Override
+    public UriBuilder replaceQueryParameter(String name, String... values) {
+        getQueryParametersBuilder().replaceQueryParameter(name, values);
+        return this;
+    }
+
+    @Override
     public UriBuilder removeQueryParameterWithEncodedName(String encodedName) {
         getQueryParametersBuilder().removeQueryParameterWithEncodedName(encodedName);
         return this;

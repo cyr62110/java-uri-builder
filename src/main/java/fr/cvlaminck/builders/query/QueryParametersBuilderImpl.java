@@ -87,9 +87,33 @@ class QueryParametersBuilderImpl
     }
 
     @Override
-    public QueryParametersBuilder removeQueryParameterWithEncodedName(String encodedName) {
-        queryParameters.remove(encodedName);
+    public QueryParametersBuilder replaceEncodedQueryParameter(String encodedName, String... encodedValues) {
+        queryParameterValidator.validateQueryParameterName(encodedName);
+        if (encodedValues.length == 0) {
+            return removeQueryParameterWithEncodedName(encodedName);
+        }
+        List<String> queryParameterValues = queryParameters.get(encodedName);
+        if (queryParameterValues == null) {
+            queryParameterValues = new ArrayList<String>();
+            queryParameters.put(encodedName, queryParameterValues);
+        } else if (queryParameterValues != null) {
+            queryParameterValues.clear();
+        }
+        for (String encodedValue : encodedValues) {
+            queryParameterValidator.validateQueryParameterValue(encodedValue);
+            queryParameterValues.add(encodedValue);
+        }
         return this;
+    }
+
+    @Override
+    public QueryParametersBuilder replaceQueryParameter(String name, String... values) {
+        String encodedName = uriEncoding.encode(name);
+        String[] encodedValues = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            encodedValues[i] = uriEncoding.encode(values[i]);
+        }
+        return replaceEncodedQueryParameter(encodedName, encodedValues);
     }
 
     @Override
