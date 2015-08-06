@@ -111,8 +111,9 @@ public class QueryParameters
      * The name provided to this method will be encoded before trying to find
      * the corresponding query parameter.
      */
-    public QueryParameter getQueryParameter(String key) {
-        return this.queryParameters.get(key); //TODO
+    public QueryParameter getQueryParameter(String name) {
+        String encodedName = uriEncoding.encode(name);
+        return getQueryParameterWithEncodedName(encodedName);
     }
 
     /**
