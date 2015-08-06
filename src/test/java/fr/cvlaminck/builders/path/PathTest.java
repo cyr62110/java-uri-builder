@@ -112,4 +112,16 @@ public class PathTest {
 
         assertEquals("test", path.toString(options));
     }
+
+    @Test
+    public void testEquals() throws Exception {
+        PathBuilder builder = Path.newBuilder()
+                .absolute()
+                .appendEncodedPathSegment("test");
+
+        assertTrue(Path.parse("/test").equals(builder.build()));
+        assertFalse(Path.parse("test").equals(builder.build()));
+        assertFalse(Path.parse("/test2").equals(builder.build()));
+        assertFalse(Path.parse("test2").equals(builder.build()));
+    }
 }

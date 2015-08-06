@@ -186,13 +186,25 @@ public class Path {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode(); //FIXME
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Path path = (Path) o;
+
+        if (absolute != path.absolute) return false;
+        if (pathSegmentSeparator != path.pathSegmentSeparator) return false;
+        if (!pathSegments.equals(path.pathSegments)) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj); //FIXME
+    public int hashCode() {
+        int result = (absolute ? 1 : 0);
+        result = 31 * result + pathSegments.hashCode();
+        result = 31 * result + (int) pathSegmentSeparator;
+        return result;
     }
 
     @Override
