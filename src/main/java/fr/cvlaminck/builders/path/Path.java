@@ -111,6 +111,24 @@ public class Path {
     }
 
     /**
+     * Convenient method to convert the current path as a relative path.
+     *
+     * @return a copy of the current path as a relative path
+     */
+    public Path asRelative() {
+        return buildUpon().relative().build();
+    }
+
+    /**
+     * Convenient method to convert the current path as an absolute path.
+     *
+     * @return a copy of the current path as an absolute path
+     */
+    public Path asAbsolute() {
+        return buildUpon().absolute().build();
+    }
+
+    /**
      * According to RFC3986, an absolute path starts with a slash '/' character.
      *
      * @return true if this path is no-scheme, false otherwise.

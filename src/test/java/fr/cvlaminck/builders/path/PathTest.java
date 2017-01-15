@@ -79,6 +79,46 @@ public class PathTest {
     }
 
     @Test
+    public void testAsRelative() {
+        Path originalRelativePath = Path.newBuilder()
+                .relative()
+                .appendPathSegment("test")
+                .build();
+
+        Path path1 = originalRelativePath.asRelative();
+        assertEquals(originalRelativePath, path1);
+        assertNotSame(originalRelativePath, path1);
+
+        Path originalAbsolutePath = Path.newBuilder()
+                .absolute()
+                .appendPathSegment("test")
+                .build();
+
+        Path path2 = originalAbsolutePath.asRelative();
+        assertEquals("test", path2.toString());
+    }
+
+    @Test
+    public void testAsAbsolute() {
+        Path originalRelativePath = Path.newBuilder()
+                .relative()
+                .appendPathSegment("test")
+                .build();
+
+        Path path1 = originalRelativePath.asAbsolute();
+        assertEquals("/test", path1.toString());
+
+        Path originalAbsolutePath = Path.newBuilder()
+                .absolute()
+                .appendPathSegment("test")
+                .build();
+
+        Path path2 = originalAbsolutePath.asAbsolute();
+        assertEquals(originalAbsolutePath, path2);
+        assertNotSame(originalAbsolutePath, path2);
+    }
+
+    @Test
     public void testToStringAbsolutePath() throws Exception {
         Path path = Path.newBuilder()
                 .absolute()
