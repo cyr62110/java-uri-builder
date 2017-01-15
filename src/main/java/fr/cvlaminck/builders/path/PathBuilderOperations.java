@@ -21,6 +21,15 @@ package fr.cvlaminck.builders.path;
 public interface PathBuilderOperations<Builder> {
 
     /**
+     * Append a path at the end of the path constructed using the builder.
+     *
+     * @param path Must be relative
+     * @return the current PathBuilder
+     * @throws java.lang.IllegalArgumentException if path is not relative
+     */
+    public Builder appendPath(Path path);
+
+    /**
      * Append a new segment at the end of the path constructed using the builder.
      * The segment will be encoded before being appended to the path.
      *

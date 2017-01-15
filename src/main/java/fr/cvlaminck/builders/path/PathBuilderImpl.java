@@ -73,6 +73,17 @@ class PathBuilderImpl
     }
 
     @Override
+    public PathBuilder appendPath(Path path) {
+        if (path.isAbsolute()) {
+            throw new IllegalArgumentException("Appended path must be relative");
+        }
+        for (int i = 0; i < path.getPathSegmentCount(); i++) {
+            appendEncodedPathSegment(path.getEncodedPathSegment(i));
+        }
+        return this;
+    }
+
+    @Override
     public PathBuilder removePathSegment(int index) {
         if (index < 0 || index >= pathSegments.size()) {
             throw new IndexOutOfBoundsException();

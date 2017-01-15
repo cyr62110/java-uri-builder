@@ -15,6 +15,7 @@
  */
 package fr.cvlaminck.builders.uri;
 
+import fr.cvlaminck.builders.path.Path;
 import fr.cvlaminck.builders.uri.encoding.UriEncoding;
 
 class UriBuilderImpl
@@ -80,6 +81,12 @@ class UriBuilderImpl
     @Override
     public UriBuilder appendEncodedPathSegment(String pathSegment) {
         getPathBuilder().appendEncodedPathSegment(pathSegment);
+        return this;
+    }
+
+    @Override
+    public UriBuilder appendPath(Path path) {
+        getPathBuilder().appendPath(path);
         return this;
     }
 

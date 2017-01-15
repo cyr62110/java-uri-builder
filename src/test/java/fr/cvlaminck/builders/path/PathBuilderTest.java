@@ -35,6 +35,40 @@ public class PathBuilderTest {
     }
 
     @Test
+    public void testAppendPath() throws Exception {
+        Path originalPath = Path.newBuilder()
+                .relative()
+                .appendPathSegment("test")
+                .build();
+
+        Path appendedPath1 = Path.emptyPath();
+        Path path1 = originalPath.buildUpon()
+                .appendPath(appendedPath1)
+                .build();
+        assertEquals("test", path1.toString());
+
+        Path appendedPath2 = Path.newBuilder()
+                .relative()
+                .appendPathSegment("test2")
+                .build();
+        Path path2 = originalPath.buildUpon()
+                .appendPath(appendedPath2)
+                .build();
+        assertEquals("test/test2", path2.toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendPathThrowsIllegalArgumentException() throws Exception {
+        Path appendedPath = Path.newBuilder()
+                .absolute()
+                .appendPathSegment("test")
+                .build();
+
+        Path.newBuilder()
+                .appendPath(appendedPath);
+    }
+
+    @Test
     public void testRemovePathSegment() throws Exception {
         Path path = Path.newBuilder()
                 .appendEncodedPathSegment("test")
