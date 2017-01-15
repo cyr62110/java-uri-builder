@@ -59,6 +59,8 @@ bintray {
         name = 'java-uri-builder'
         version {
             name = project.version
+            released  = new Date()
+            vcsTag = "v${project.version}"
         }
     }
 }
