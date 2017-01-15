@@ -114,6 +114,19 @@ public class PathTest {
     }
 
     @Test
+    public void testToStringNonEncoded() throws Exception {
+        Path path = Path.newBuilder()
+                .absolute()
+                .appendPathSegment("test test")
+                .build();
+
+        Path.FormattingOptions options = new Path.FormattingOptions();
+        options.nonEncoded = true;
+
+        assertEquals("/test test", path.toString(options));
+    }
+
+    @Test
     public void testEquals() throws Exception {
         PathBuilder builder = Path.newBuilder()
                 .absolute()

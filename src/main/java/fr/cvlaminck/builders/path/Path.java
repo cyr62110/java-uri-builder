@@ -224,7 +224,14 @@ public class Path {
             if (i != 0) {
                 sb.append(pathSegmentSeparatorChar);
             }
-            sb.append(pathSegments.get(i));
+
+            String pathSegment;
+            if (!options.nonEncoded) {
+                pathSegment = getEncodedPathSegment(i);
+            } else {
+                pathSegment = getPathSegment(i);
+            }
+            sb.append(pathSegment);
         }
         return sb.toString();
     }
@@ -235,6 +242,11 @@ public class Path {
          * first separator char at the start of the path.
          */
         public boolean withoutRoot;
+
+        /**
+         * Path segment will be printed without pct-encoded characters.
+         */
+        public boolean nonEncoded;
 
         public static FormattingOptions defaultOptions() {
             FormattingOptions options = new FormattingOptions();
